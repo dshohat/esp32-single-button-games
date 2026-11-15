@@ -19,7 +19,8 @@ Use the kit booklet for breadboard placement and buzzer polarity. Disconnect USB
 3. Open this folder in VS Code and wait for PlatformIO to finish installing its toolchain.
 4. Open the PlatformIO terminal and run `pio device list` to identify the ESP32 port. Do not assume a fixed COM number.
 
-If PowerShell says `pio` is not recognized, try the bundled Core at `$env:USERPROFILE\.platformio\penv\Scripts\pio.exe` (prefix the command with `&` in PowerShell), or use the PlatformIO Project Tasks in VS Code.
+   - If PowerShell says `pio` is not recognized, replace `pio` in the commands below with `& "$env:USERPROFILE\.platformio\penv\Scripts\pio.exe"`, or use the PlatformIO Project Tasks in VS Code.
+
 5. Build the diagnostic firmware:
 
    ```powershell

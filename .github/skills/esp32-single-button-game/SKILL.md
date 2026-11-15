@@ -17,8 +17,8 @@ Use this skill for the ESP32 single-button kit in this repository. The kit's fac
 
 ## Start with kit verification
 
-1. Confirm the repository is open as the VS Code workspace and PlatformIO IDE/Core is available. If `pio` is not on PATH, check `$env:USERPROFILE\.platformio\penv\Scripts\pio.exe` and invoke it with PowerShell's call operator (`&`). If neither exists, guide the volunteer through installing the PlatformIO IDE extension and waiting for Core setup; do not install unrelated tools.
-2. Ask the volunteer to connect the kit by USB. Run `pio device list` (or the discovered Core executable); if multiple likely ports appear, ask which is the kit. Never assume COM5 or select an ambiguous port.
+1. Confirm the repository is open as the VS Code workspace and PlatformIO IDE/Core is available. In PowerShell, use `pio` if it is on PATH; otherwise set `$pio = "$env:USERPROFILE\.platformio\penv\Scripts\pio.exe"` and invoke every command as `& $pio ...`. Do not locate the bundled executable and then continue issuing `pio` commands. If neither is available, guide the volunteer through installing the PlatformIO IDE extension and waiting for Core setup; do not install unrelated tools.
+2. Ask the volunteer to connect the kit by USB. Run `pio device list` using the resolved command; if multiple likely ports appear, ask which is the kit. Never assume COM5 or select an ambiguous port.
 3. Build the diagnostic project with `pio run -d hardware-test`. Fix build errors before attempting upload.
 4. The board currently has factory MicroPython firmware. Before the first Arduino upload only, explain that a full flash erase removes the factory firmware and stored files, identify the selected port, and ask for explicit confirmation. Do not run erase until the volunteer confirms.
 5. After confirmation, run `pio run -d hardware-test -t erase --upload-port <PORT>`, then upload with `pio run -d hardware-test -t upload --upload-port <PORT>`. Do not erase for subsequent games unless the user specifically requests recovery and confirms again.
