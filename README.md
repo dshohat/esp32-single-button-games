@@ -66,6 +66,8 @@ A full erase is not part of normal game uploads.
 
 The default `main` branch is the starter. Reviewed community games live on the `community-games` branch.
 
+**Important:** GitHub defaults pull requests to `main`. For game submissions, change the base branch to `community-games`. Do not merge `community-games` into `main`, or the starter will include all shared games.
+
 To share a game:
 
 1. If you have not already cloned this repository, clone it and enter the directory:
@@ -95,7 +97,7 @@ To share a game:
 
    Replace `<your-username>` with your GitHub username. If you already cloned your fork instead, push to `origin` and skip adding the `fork` remote.
 
-5. Open a pull request on GitHub from your fork's branch to this repository's **`community-games`** branch. Check that the pull request includes only your intended changes and describe any hardware testing you completed.
+5. Open a pull request on GitHub from your fork's branch to this repository's **`community-games`** branch. In the pull request form, explicitly select `community-games` as the **base** branch. Check that the pull request includes only your intended changes and describe any hardware testing you completed.
 
 To explore shared games, switch to the `community-games` branch on GitHub or clone it with:
 
