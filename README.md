@@ -61,3 +61,46 @@ pio device monitor -p COMx -b 115200
 ```
 
 A full erase is not part of normal game uploads.
+
+## Share a game
+
+The default `main` branch is the starter. Reviewed community games live on the `community-games` branch.
+
+To share a game:
+
+1. If you have not already cloned this repository, clone it and enter the directory:
+
+   ```powershell
+   git clone https://github.com/dshohat/esp32-single-button-games.git
+   cd esp32-single-button-games
+   ```
+
+2. Create a branch from `main`. You can do this before or after creating your game; uncommitted game files will remain in your working directory:
+
+   ```powershell
+   git switch -c my-game
+   ```
+
+   Replace `my-game` with a descriptive branch name.
+
+3. Create your game under `games/<game-slug>/`, including its `platformio.ini`, source code, and a README explaining how to play and build it. Build the game and test it on the kit if possible.
+4. Fork this repository on GitHub. Add your fork as a remote, then commit the game folder and push your branch to it:
+
+   ```powershell
+   git remote add fork https://github.com/<your-username>/esp32-single-button-games.git
+   git add games/<game-slug>
+   git commit -m "Add my game"
+   git push -u fork my-game
+   ```
+
+   Replace `<your-username>` with your GitHub username. If you already cloned your fork instead, push to `origin` and skip adding the `fork` remote.
+
+5. Open a pull request on GitHub from your fork's branch to this repository's **`community-games`** branch. Check that the pull request includes only your intended changes and describe any hardware testing you completed.
+
+To explore shared games, switch to the `community-games` branch on GitHub or clone it with:
+
+```powershell
+git clone --branch community-games https://github.com/dshohat/esp32-single-button-games.git
+```
+
+Maintainers should periodically merge `main` into `community-games` to bring starter improvements into the collection.
