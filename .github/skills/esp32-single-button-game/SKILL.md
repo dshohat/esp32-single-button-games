@@ -34,6 +34,15 @@ Use this skill for the ESP32 single-button kit in this repository. The kit's fac
 6. Confirm the selected port still belongs to the kit, then upload with `pio run -d games/<slug> -t upload --upload-port <PORT>`. Do not run the erase target during normal game uploads.
 7. Use `pio device monitor -p <PORT> -b 115200` when serial output helps, then ask the volunteer to try the game and report what they see/hear. Make requested changes only within that game's folder.
 
+## Branch rules
+
+- Games live only on the `community-games` branch. `main` is the clean starter: under `games/` it holds only `games/README.md`.
+- Check the branch with `git status --short --branch` before committing a game. If the checkout is on `main`, stop and ask before committing anything under `games/`.
+- When asked to commit or share a game from a checkout of `community-games`, commit there and push to `community-games` directly. Do not create a feature branch or a pull request unless the user asks for one.
+- A volunteer without push access shares a game through a fork and a pull request whose base is `community-games`, as described in the README. Set the base explicitly; GitHub defaults it to `main`.
+- Never open a pull request into `main` from `community-games` or from any branch that contains games, and never merge `community-games` into `main`. A required check on `main` rejects pull requests that add or change files under `games/`.
+- Starter changes (README, templates, hardware test, workflows, this skill) go to `main` through a pull request; direct pushes to `main` are blocked. Bring them into `community-games` by merging `main` into `community-games`, and confirm the game folders are still present before pushing.
+
 ## Troubleshooting
 
 - No serial device: try a known USB data cable and another USB port; check Device Manager and install the CP210x VCP driver if this board uses that bridge.

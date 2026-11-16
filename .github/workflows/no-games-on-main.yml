@@ -1,0 +1,29 @@
+name: Protect main from games
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  no-games-on-main:
+    name: No games on main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject added or changed files under games/
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          changed=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[] | select(.status != "removed") | .filename')
+          games=$(printf '%s\n' "$changed" | grep '^games/' | grep -vx 'games/README.md' || true)
+          if [ -n "$games" ]; then
+            echo "::error::Games belong on the community-games branch, not main. Change this pull request's base branch to community-games."
+            printf '%s\n' "$games"
+            exit 1
+          fi
+          echo "No game files added or changed."
