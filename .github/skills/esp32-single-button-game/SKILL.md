@@ -18,11 +18,27 @@ Use this skill for the ESP32 single-button kit in this repository. The kit's fac
 ## Start with kit verification
 
 1. Confirm the repository is open as the VS Code workspace and PlatformIO IDE/Core is available. In PowerShell, use `pio` if it is on PATH; otherwise set `$pio = "$env:USERPROFILE\.platformio\penv\Scripts\pio.exe"` and invoke every command as `& $pio ...`. Do not locate the bundled executable and then continue issuing `pio` commands. If neither is available, guide the volunteer through installing the PlatformIO IDE extension and waiting for Core setup; do not install unrelated tools.
-2. Ask the volunteer to connect the kit by USB. Run `pio device list` using the resolved command; if multiple likely ports appear, ask which is the kit. Never assume COM5 or select an ambiguous port.
-3. Build the diagnostic project with `pio run -d hardware-test`. Fix build errors before attempting upload.
+2. Ask the volunteer to connect the kit by USB. Run `pio device list` using the resolved command; if multiple likely ports appear, ask which is the kit. Never assume COM5 or select an ambiguous port. A listed USB serial bridge confirms enumeration, not that the ESP32 chip responds.
+3. Build the diagnostic project with `pio run -d hardware-test`. On a fresh setup, this downloads the ESP32 platform, compiler, framework, and tools including `esptool`; let it finish. Building does not require the board or change its firmware. Do not stop at "esptool is not installed yet": complete this setup before diagnosing chip communication. Fix build errors before attempting upload; for download failures, follow the network troubleshooting below.
 4. The board currently has factory MicroPython firmware. Before the first Arduino upload only, explain that a full flash erase removes the factory firmware and stored files, identify the selected port, and ask for explicit confirmation. Do not run erase until the volunteer confirms.
 5. After confirmation, run `pio run -d hardware-test -t erase --upload-port <PORT>`, then upload with `pio run -d hardware-test -t upload --upload-port <PORT>`. Do not erase for subsequent games unless the user specifically requests recovery and confirms again.
 6. Open serial at 115200 baud. Interpret the diagnostic honestly: I2C scan proves a device responded at an address; a button event proves GPIO4 changed; firmware cannot prove OLED pixels are visible or the buzzer is audible. Ask the volunteer to confirm the screen and chirp in person. If checks fail, power off and inspect booklet wiring, then retest.
+
+### Check chip communication without flashing
+
+If the volunteer asks whether the chip responds, or wants to check it before consenting to erase/upload, complete steps 1-3 above, then:
+
+1. Close serial monitors and confirm the selected port belongs to the kit.
+2. Run `pio system info` using the resolved PlatformIO command. Use its **Python Executable** and **PlatformIO Core Directory** to locate the bundled interpreter and `packages/tool-esptoolpy/esptool.py`. Do not assume the system Python, `esptool` on PATH, or a particular Core directory. Do not install a separate copy with `pip`.
+3. Invoke the bundled tool's `--help` to verify its command syntax. With the standard Windows installation and esptool v4, the commands are:
+
+	```powershell
+	& "$env:USERPROFILE\.platformio\penv\Scripts\python.exe" "$env:USERPROFILE\.platformio\packages\tool-esptoolpy\esptool.py" --help
+	& "$env:USERPROFILE\.platformio\penv\Scripts\python.exe" "$env:USERPROFILE\.platformio\packages\tool-esptoolpy\esptool.py" --port <PORT> chip_id
+	```
+
+	Replace the paths with those discovered above and `<PORT>` with the confirmed port. If the installed tool uses different names or layout, follow its help rather than guessing. This identification command does not erase or write flash, but can reset the board and interrupt its running game.
+4. Report chip communication as confirmed only if the command succeeds and identifies the ESP32. A timeout is a connection problem, not proof of a dead chip: close port users and follow the BOOT/reset connection guidance. If setup is blocked, report the exact download/tool error and leave chip communication unverified. Do not erase or upload just to establish that the chip responds; keep the explicit erase confirmation requirement above.
 
 ## Create a new game
 
@@ -46,6 +62,7 @@ Use this skill for the ESP32 single-button kit in this repository. The kit's fac
 ## Troubleshooting
 
 - No serial device: try a known USB data cable and another USB port; check Device Manager and install the CP210x VCP driver if this board uses that bridge.
+- `esptool` missing: complete `pio run -d hardware-test` first, then use PlatformIO's bundled tool as described above. A missing command on PATH is not a chip or driver failure. If the build succeeds but the bundled tool is still absent, report the actual package/path problem rather than installing an unrelated copy.
 - Upload cannot connect: close other serial monitors; retry and follow the uploader's BOOT-button prompt. Do not erase as a generic upload fix.
 - Dependency download fails: report the PlatformIO network error and ask whether a corporate proxy is required. Do not repeatedly retry downloads or silently change library versions.
 - OLED missing: check power and SDA/SCL routing, then rerun the I2C scan. Report both `0x3C` and `0x3D` as supported probe addresses; do not claim a display works just because I2C ACKs.
